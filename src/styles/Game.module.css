@@ -428,12 +428,12 @@
 /* Responsive */
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
+    padding: 0.5rem;
   }
 
   .header {
-    margin-bottom: 1.5rem;
-    padding: 0 1rem;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
   }
 
   .backButton {
@@ -511,6 +511,7 @@
   .grid {
     gap: 0.5rem;
     padding: 0.5rem;
+    width: calc(100% - 1rem);
   }
 
   .cell {
@@ -559,6 +560,7 @@
   .grid {
     gap: 0.35rem;
     padding: 0.35rem;
+    width: calc(100% - 0.5rem);
   }
 
   .cell {
@@ -708,6 +710,7 @@
   max-width: 1000px;
   padding: 1rem;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .cell {
@@ -729,6 +732,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   word-wrap: break-word;
   hyphens: auto;
+  box-sizing: border-box;
 }
 
 .cell:hover {
