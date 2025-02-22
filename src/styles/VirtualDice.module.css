@@ -1,0 +1,216 @@
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #2a2a2a;
+  border-radius: 20px;
+  border: 2px solid #444;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(153, 50, 204, 0.1);
+  border: 1px solid rgba(153, 50, 204, 0.2);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: #9932CC;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  color: #800080;
+  transform: rotate(90deg);
+  background: rgba(153, 50, 204, 0.2);
+}
+
+.controls {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.diceCountLabel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.diceCountSlider {
+  width: 200px;
+  height: 8px;
+  -webkit-appearance: none;
+  background: #444;
+  border-radius: 4px;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.diceCountSlider:hover {
+  opacity: 1;
+}
+
+.diceCountSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #9932CC;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.diceCountSlider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: #800080;
+}
+
+.rollButton {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  background: #9932CC;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rollButton:hover:not(:disabled) {
+  background: #800080;
+  transform: translateY(-2px);
+}
+
+.rollButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.diceContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.dice {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 12px;
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  padding: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.dice.rolling {
+  animation: roll 0.5s linear infinite;
+}
+
+@keyframes roll {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(90deg) scale(0.9); }
+  50% { transform: rotate(180deg) scale(1); }
+  75% { transform: rotate(270deg) scale(0.9); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: #333;
+  border-radius: 50%;
+  align-self: center;
+  justify-self: center;
+}
+
+.total {
+  font-size: 1.5rem;
+  color: #9932CC;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.history {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(153, 50, 204, 0.1);
+  border-radius: 8px;
+}
+
+.history h3 {
+  color: #9932CC;
+  margin: 0 0 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clearButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background: rgba(153, 50, 204, 0.2);
+  color: #9932CC;
+  border: 1px solid rgba(153, 50, 204, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clearButton:hover {
+  background: rgba(153, 50, 204, 0.3);
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.historyItem {
+  padding: 0.5rem;
+  background: rgba(153, 50, 204, 0.05);
+  border-radius: 4px;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .diceContainer {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .dice {
+    width: 60px;
+    height: 60px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+  }
+} 
