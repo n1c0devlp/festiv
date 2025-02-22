@@ -104,37 +104,26 @@ const CategoryBasedGame = ({ questions, categories }: NeverHaveIEverProps) => {
 
   if (!currentCategory) {
     return (
-      <div className={styles.container}>
-        <header className={styles.header}>
-          <button onClick={() => window.history.back()} className={styles.backButton}>
-            <span>←</span>
-            <span>Retour</span>
+      <div className={styles.categoriesList}>
+        {Object.entries(categories).map(([key, category], index) => (
+          <button
+            key={key}
+            className={styles.categoryButton}
+            onClick={() => handleCategorySelect(key)}
+            style={{ '--index': index } as any}
+          >
+            <div className={styles.categoryIcon}>
+              {key.split(' ')[0]}
+            </div>
+            <div className={styles.categoryInfo}>
+              <h2 className={styles.categoryTitle}>{category}</h2>
+              <p className={styles.categoryDescription}>
+                {questionsByCategory[key]?.length || 0} questions
+              </p>
+            </div>
+            <span className={styles.categoryArrow}>→</span>
           </button>
-          <h1 className={styles.title}>
-            {game?.title || ''}
-          </h1>
-        </header>
-        <div className={styles.categoriesList}>
-          {Object.entries(categories).map(([key, category], index) => (
-            <button
-              key={key}
-              className={styles.categoryButton}
-              onClick={() => handleCategorySelect(key)}
-              style={{ '--index': index } as any}
-            >
-              <div className={styles.categoryIcon}>
-                {key.split(' ')[0]}
-              </div>
-              <div className={styles.categoryInfo}>
-                <h2 className={styles.categoryTitle}>{category}</h2>
-                <p className={styles.categoryDescription}>
-                  {questionsByCategory[key]?.length || 0} questions
-                </p>
-              </div>
-              <span className={styles.categoryArrow}>→</span>
-            </button>
-          ))}
-        </div>
+        ))}
       </div>
     );
   }
@@ -142,16 +131,7 @@ const CategoryBasedGame = ({ questions, categories }: NeverHaveIEverProps) => {
   const currentQuestion = currentQuestions[currentQuestionIndex];
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <button onClick={resetCategory} className={styles.backButton}>
-          <span>←</span>
-          <span>Retour aux catégories</span>
-        </button>
-        <h1 className={styles.title}>
-          {game?.title || ''}
-        </h1>
-      </header>
+    <>
       <div className={styles.questionCategory}>
         {currentCategory.split(' ')[0]} {categories[currentCategory]}
       </div>
@@ -174,7 +154,7 @@ const CategoryBasedGame = ({ questions, categories }: NeverHaveIEverProps) => {
           Suivant →
         </button>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -184,6 +164,7 @@ export default function GamePage() {
   const game = games.find(g => g.id === gameId);
   const [selectedGame, setSelectedGame] = useState<GameQuestion | null>(null);
   const [checkedCells, setCheckedCells] = useState<boolean[]>([]);
+  const [currentCategory, setCurrentCategory] = useState<string | null>(null);
 
   useEffect(() => {
     if (game && game.id === 'gabingo') {
@@ -194,10 +175,13 @@ export default function GamePage() {
   if (!game) {
     return (
       <main className={styles.container}>
-        <h1>Jeu non trouvé</h1>
-        <button onClick={() => window.history.back()} className={styles.backButton}>
-          ← Retour
-        </button>
+        <header className={styles.header}>
+          <button onClick={() => window.history.back()} className={styles.backButton}>
+            <span>←</span>
+            <span>Retour</span>
+          </button>
+          <h1 className={styles.title}>Jeu non trouvé</h1>
+        </header>
       </main>
     );
   }
@@ -212,6 +196,24 @@ export default function GamePage() {
 
   const checkedCount = checkedCells.filter(Boolean).length;
   const hasWon = checkedCount >= (game.config.winningCount || 5);
+
+  const getBackButtonText = () => {
+    if (selectedGame) return "Retour aux jeux";
+    if (currentCategory) return "Retour aux catégories";
+    return "Retour";
+  };
+
+  const handleBackClick = () => {
+    if (selectedGame) {
+      setSelectedGame(null);
+      return;
+    }
+    if (currentCategory) {
+      setCurrentCategory(null);
+      return;
+    }
+    window.history.back();
+  };
 
   const renderGameContent = () => {
     if (!game) {
@@ -336,9 +338,9 @@ export default function GamePage() {
   return (
     <main className={styles.container}>
       <header className={styles.header}>
-        <button onClick={() => window.history.back()} className={styles.backButton}>
+        <button onClick={handleBackClick} className={styles.backButton}>
           <span>←</span>
-          <span>Retour</span>
+          <span>{getBackButtonText()}</span>
         </button>
         <h1 className={styles.title}>
           {game.title}

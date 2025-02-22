@@ -507,6 +507,17 @@
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
   }
+
+  .grid {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .cell {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    min-height: 90px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -543,6 +554,17 @@
   .navButton {
     padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
+  }
+
+  .grid {
+    gap: 0.35rem;
+    padding: 0.35rem;
+  }
+
+  .cell {
+    padding: 0.35rem;
+    font-size: 0.75rem;
+    min-height: 70px;
   }
 }
 
@@ -680,7 +702,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin: 0 auto;
   max-width: 1000px;
@@ -782,18 +804,6 @@
 }
 
 @media (max-width: 768px) {
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    padding: 0.5rem;
-  }
-
-  .cell {
-    padding: 0.75rem;
-    font-size: 0.9rem;
-    min-height: 100px;
-  }
-
   .score {
     font-size: 1.2rem;
   }
@@ -810,6 +820,6 @@
 
 @media (max-width: 480px) {
   .cell {
-    min-height: 80px;
+    min-height: 70px;
   }
 } 
