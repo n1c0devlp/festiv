@@ -2,6 +2,11 @@ export interface GameQuestion {
   text: string;
   isChecked: boolean;
   category?: string;
+  metadata?: {
+    points?: number;
+    timer?: number;
+    requiredPlayers?: number;
+  };
 }
 
 export interface GameConfig {
