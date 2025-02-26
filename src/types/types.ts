@@ -6,6 +6,8 @@ export interface GameQuestion {
     points?: number;
     timer?: number;
     requiredPlayers?: number;
+    questions?: GameQuestion[];
+    config?: GameConfig;
   };
 }
 
@@ -18,6 +20,7 @@ export interface GameConfig {
   shuffleOnLoad: boolean;
   displayMode?: 'grid' | 'single';
   categories?: string[];
+  title?: string;
 }
 
 export interface Game {

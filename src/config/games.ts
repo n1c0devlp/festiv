@@ -1,5 +1,5 @@
 import { Game } from '@/types/types';
-import { bingoQuestions, bingoConfig } from './games/bingoQuestions';
+import { gabingoQuestions, adingoQuestions, lucingoQuestions, bincoQuestions, clemingoQuestions, bingoConfigs } from './games/bingoQuestions';
 import { neverHaveIEverQuestions, neverHaveIEverConfig } from './games/neverHaveIEver';
 import { cardGamesQuestions, cardGamesConfig } from './games/cardGames';
 import { quizQuestions, quizConfig } from './games/quizQuestions';
@@ -9,12 +9,63 @@ import { picoloQuestions, picoloConfig } from './games/picoloQuestions';
 
 export const games: Game[] = [
   {
-    id: 'gabingo',
-    title: 'Gabingo',
-    description: 'Le bingo des expressions de Gab !',
-    icon: '👑',
-    questions: bingoQuestions,
-    config: bingoConfig
+    id: 'bingo',
+    title: 'Bingo',
+    description: 'Collection de bingos personnalisés !',
+    icon: '🎯',
+    questions: [
+      {
+        category: '👑 Gabingo',
+        text: 'Le bingo des expressions de Gab !',
+        isChecked: false,
+        metadata: {
+          questions: gabingoQuestions,
+          config: bingoConfigs.gabingo
+        }
+      },
+      {
+        category: '🎭 Adingo',
+        text: 'Le bingo des expressions d\'Adèle !',
+        isChecked: false,
+        metadata: {
+          questions: adingoQuestions,
+          config: bingoConfigs.adingo
+        }
+      },
+      {
+        category: '🌟 Lucingo',
+        text: 'Le bingo des expressions de Luc !',
+        isChecked: false,
+        metadata: {
+          questions: lucingoQuestions,
+          config: bingoConfigs.lucingo
+        }
+      },
+      {
+        category: '🎪 Binco',
+        text: 'Le bingo des expressions de Nico !',
+        isChecked: false,
+        metadata: {
+          questions: bincoQuestions,
+          config: bingoConfigs.binco
+        }
+      },
+      {
+        category: '🎨 Clemingo',
+        text: 'Le bingo des expressions de Clément !',
+        isChecked: false,
+        metadata: {
+          questions: clemingoQuestions,
+          config: bingoConfigs.clemingo
+        }
+      }
+    ],
+    config: {
+      winningCount: 5,
+      displayMode: 'single',
+      shuffleOnLoad: true,
+      categories: ['👑 Gabingo', '🎭 Adingo', '🌟 Lucingo', '🎪 Binco', '🎨 Clemingo']
+    }
   },
   {
     id: 'never-have-i-ever',

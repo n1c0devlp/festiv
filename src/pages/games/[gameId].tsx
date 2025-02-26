@@ -167,10 +167,15 @@ export default function GamePage() {
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
 
   useEffect(() => {
-    if (game && game.id === 'gabingo') {
-      setCheckedCells(new Array(game.questions.length).fill(false));
+    if (selectedGame?.metadata?.questions) {
+      setCheckedCells(new Array(selectedGame.metadata.questions.length).fill(false));
+      
+      // Mélanger les questions si shuffleOnLoad est activé
+      if (selectedGame.metadata.config?.shuffleOnLoad) {
+        selectedGame.metadata.questions = [...selectedGame.metadata.questions].sort(() => Math.random() - 0.5);
+      }
     }
-  }, [game]);
+  }, [selectedGame]);
 
   if (!game) {
     return (
@@ -187,7 +192,7 @@ export default function GamePage() {
   }
 
   const handleCellClick = (index: number) => {
-    if (game.id === 'gabingo') {
+    if (selectedGame?.metadata?.questions) {
       const newCheckedCells = [...checkedCells];
       newCheckedCells[index] = !newCheckedCells[index];
       setCheckedCells(newCheckedCells);
@@ -195,10 +200,10 @@ export default function GamePage() {
   };
 
   const checkedCount = checkedCells.filter(Boolean).length;
-  const hasWon = checkedCount >= (game.config.winningCount || 5);
+  const hasWon = checkedCount >= (selectedGame?.metadata?.config?.winningCount || 5);
 
   const getBackButtonText = () => {
-    if (selectedGame) return "Retour aux jeux";
+    if (selectedGame) return "Retour aux bingos";
     if (currentCategory) return "Retour aux catégories";
     return "Retour";
   };
@@ -232,107 +237,145 @@ export default function GamePage() {
       }), {} as Record<string, string>);
     };
 
-    switch (game.id) {
-      case 'gabingo':
+    const isBingoGame = game.id === 'bingo';
+    const isCardGame = game.id === 'card-games';
+    const isPicoloGame = game.id === 'picolo';
+    const isCategoryBasedGame = ['never-have-i-ever', 'quiz', 'truth-or-dare', 'drinking-cards'].includes(game.id);
+
+    if (isBingoGame) {
+      if (!selectedGame) {
         return (
-          <>
-            <div className={styles.scoreContainer}>
-              <div className={styles.score}>
-                Cases cochées : {checkedCount} / {game.config.winningCount || 5}
-              </div>
-              {hasWon && (
-                <div className={styles.winMessage}>
-                  🎉 Félicitations ! Vous avez gagné ! 🎉
+          <div className={styles.categoriesList}>
+            {game.questions.map((bingoGame, index) => (
+              <button
+                key={index}
+                className={styles.categoryButton}
+                onClick={() => setSelectedGame(bingoGame)}
+                style={{ '--index': index } as any}
+              >
+                <div className={styles.categoryIcon}>
+                  {bingoGame.category?.split(' ')[0]}
                 </div>
-              )}
-            </div>
-            <div className={styles.grid}>
-              {game.questions.map((question, index) => (
-                <button
-                  key={index}
-                  className={`${styles.cell} ${checkedCells[index] ? styles.checked : ''}`}
-                  onClick={() => handleCellClick(index)}
-                >
-                  {question.text}
-                </button>
-              ))}
-            </div>
-            <button
-              className={styles.resetButton}
-              onClick={() => setCheckedCells(new Array(game.questions.length).fill(false))}
-            >
-              Réinitialiser
-            </button>
-          </>
-        );
-
-      case 'never-have-i-ever':
-      case 'quiz':
-      case 'truth-or-dare':
-      case 'drinking-cards':
-        return <CategoryBasedGame questions={game.questions} categories={categoriesToObject(game.config.categories)} />;
-
-      case 'card-games':
-        if (!selectedGame) {
-          return (
-            <div className={styles.categoriesList}>
-              {game.questions.map((gameCategory, index) => (
-                <button
-                  key={index}
-                  className={styles.categoryButton}
-                  onClick={() => setSelectedGame(gameCategory)}
-                  style={{ '--index': index } as any}
-                >
-                  <div className={styles.categoryIcon}>
-                    {gameCategory.category?.split(' ')[0] || game.icon}
-                  </div>
-                  <div className={styles.categoryInfo}>
-                    <h2 className={styles.categoryTitle}>
-                      {gameCategory.category?.split(' ').slice(1).join(' ') || 'Question ' + (index + 1)}
-                    </h2>
-                    <p className={styles.categoryDescription}>
-                      {gameCategory.category?.includes('Virtuel') 
-                        ? 'Cliquez pour jouer'
-                        : 'Cliquez pour voir les règles'}
-                    </p>
-                  </div>
-                  <span className={styles.categoryArrow}>→</span>
-                </button>
-              ))}
-            </div>
-          );
-        }
-
-        switch (selectedGame.category) {
-          case "🎲 Dés Virtuels":
-            return <VirtualDice onClose={() => setSelectedGame(null)} />;
-          case "🎴 Cartes Virtuelles":
-            return <VirtualCards onClose={() => setSelectedGame(null)} />;
-          default:
-            return (
-              <GameRules 
-                game={{
-                  id: game.id,
-                  title: selectedGame.category,
-                  icon: selectedGame.category.split(' ')[0],
-                  questions: [selectedGame]
-                }}
-                onClose={() => setSelectedGame(null)}
-              />
-            );
-        }
-
-      case 'picolo':
-        return <Picolo questions={game.questions} categories={categoriesToObject(game.config.categories)} />;
-
-      default:
-        return (
-          <div>
-            <p>Type de jeu non supporté</p>
-            <Link href="/">Retour</Link>
+                <div className={styles.categoryInfo}>
+                  <h2 className={styles.categoryTitle}>
+                    {bingoGame.category?.split(' ').slice(1).join(' ')}
+                  </h2>
+                  <p className={styles.categoryDescription}>
+                    {bingoGame.text}
+                  </p>
+                </div>
+                <span className={styles.categoryArrow}>→</span>
+              </button>
+            ))}
           </div>
         );
+      }
+
+      return (
+        <>
+          <div className={styles.scoreContainer}>
+            <div className={styles.score}>
+              Cases cochées : {checkedCount} / {selectedGame.metadata?.config?.winningCount || 5}
+            </div>
+            {hasWon && (
+              <div className={styles.winMessage}>
+                🎉 Félicitations ! Vous avez gagné ! 🎉
+              </div>
+            )}
+          </div>
+          <div className={styles.grid}>
+            {selectedGame.metadata?.questions?.map((question, index) => (
+              <button
+                key={index}
+                className={`${styles.cell} ${checkedCells[index] ? styles.checked : ''}`}
+                onClick={() => handleCellClick(index)}
+              >
+                {question.text}
+              </button>
+            ))}
+          </div>
+          <button
+            className={styles.resetButton}
+            onClick={() => {
+              if (selectedGame.metadata?.questions) {
+                setCheckedCells(new Array(selectedGame.metadata.questions.length).fill(false));
+                if (selectedGame.metadata.config?.shuffleOnLoad) {
+                  selectedGame.metadata.questions = [...selectedGame.metadata.questions].sort(() => Math.random() - 0.5);
+                }
+              }
+            }}
+          >
+            Réinitialiser
+          </button>
+        </>
+      );
     }
+
+    if (isCategoryBasedGame) {
+      return <CategoryBasedGame questions={game.questions} categories={categoriesToObject(game.config.categories)} />;
+    }
+
+    if (isCardGame) {
+      if (!selectedGame) {
+        return (
+          <div className={styles.categoriesList}>
+            {game.questions.map((gameCategory, index) => (
+              <button
+                key={index}
+                className={styles.categoryButton}
+                onClick={() => setSelectedGame(gameCategory)}
+                style={{ '--index': index } as any}
+              >
+                <div className={styles.categoryIcon}>
+                  {gameCategory.category?.split(' ')[0] || game.icon}
+                </div>
+                <div className={styles.categoryInfo}>
+                  <h2 className={styles.categoryTitle}>
+                    {gameCategory.category?.split(' ').slice(1).join(' ') || 'Question ' + (index + 1)}
+                  </h2>
+                  <p className={styles.categoryDescription}>
+                    {gameCategory.category?.includes('Virtuel') 
+                      ? 'Cliquez pour jouer'
+                      : 'Cliquez pour voir les règles'}
+                  </p>
+                </div>
+                <span className={styles.categoryArrow}>→</span>
+              </button>
+            ))}
+          </div>
+        );
+      }
+
+      switch (selectedGame.category) {
+        case "🎲 Dés Virtuels":
+          return <VirtualDice onClose={() => setSelectedGame(null)} />;
+        case "🎴 Cartes Virtuelles":
+          return <VirtualCards onClose={() => setSelectedGame(null)} />;
+        default:
+          return (
+            <GameRules 
+              game={{
+                id: game.id,
+                title: selectedGame.category,
+                icon: selectedGame.category.split(' ')[0],
+                questions: [selectedGame]
+              }}
+              onClose={() => setSelectedGame(null)}
+            />
+          );
+      }
+    }
+
+    if (isPicoloGame) {
+      return <Picolo questions={game.questions} categories={categoriesToObject(game.config.categories)} />;
+    }
+
+    return (
+      <div>
+        <p>Type de jeu non reconnu</p>
+        <Link href="/">Retour</Link>
+      </div>
+    );
   };
 
   return (
